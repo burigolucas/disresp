@@ -128,14 +128,23 @@ def build_model():
                                 max_features=None,
                                 use_idf=False,
                                 ngram_range=(1, 2))),
-        ('clf', MultiOutputClassifier(LinearSVC(C=1)))
+        ('clf', MultiOutputClassifier(LinearSVC(C=5)))
     ])
 
-    param_grid = {
-        'vect__max_features': (None, 5000, 10000),
-        'vect__ngram_range': ((1, 1), (1, 2)),
-        'vect__use_idf': (True, False),
-    }
+    # param_grid = {
+    #     'vect__max_features': (None, 5000, 10000),
+    #     'vect__ngram_range': ((1, 1), (1, 2)),
+    #     'vect__use_idf': (True, False),
+    # }
+
+    param_grid = [
+        {'clf' : [MultiOutputClassifier(LinearSVC())],
+        'clf__estimator__C' : [0.1,0.5,1.,3.,5.,10],
+        },
+        {'clf' : [MultiOutputClassifier(RandomForestClassifier(n_estimators=100))],
+        'clf__estimator__n_estimators' : [50, 100, 200],
+        }
+    ]
 
     model =  GridSearchCV(pipeline,
                           param_grid=param_grid,
